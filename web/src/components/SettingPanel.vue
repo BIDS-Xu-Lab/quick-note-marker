@@ -1,0 +1,388 @@
+<script setup>
+import { ref } from "vue";
+import dayjs from "dayjs";
+import { useDataStore } from "../DataStore";
+import { fsOpenFile } from "../utils/fs_helper";
+
+const store = useDataStore();
+
+function onClickClose() {
+    store.flag.show_setting_panel = false;
+}
+
+const keywords = ref('');
+
+function onClickRefreshKeywords() {
+    keywords.value = store.keywords.join('\n');
+}
+
+function onClickAddKeywords () {
+    // ask for a new keyword
+    let token = prompt('Please enter a new keyword');
+    if (token == null) {
+        return;
+    }
+
+    // search if this token is already in the list
+    if (store.hasKeywordInSettings(token)) {
+        store.msg('This keyword is already in the list');
+        return;
+    }
+    
+    // add this token to store
+    store.config.keywords.push(token);
+
+    // save to localstorage
+    store.saveSettingsToLocalStorage();
+
+    store.msg('Added a new keyword to the list');
+}
+
+function onClickDeleteKeyword(idx) {
+    store.removeKeywordFromSettings(idx);
+
+    // save to localstorage
+    store.saveSettingsToLocalStorage();
+
+    store.msg('Deleted a keyword from the list');
+}
+
+function onClickSave() {
+    // just save everything to localstorage
+    localStorage.setItem(
+        "config",
+        JSON.stringify(store.config)
+    )
+    store.msg('Saved all settings to your local environment');
+}
+
+async function onClickImportSetting() {
+    let { fh, file } = await fsOpenFile({
+        types: [{
+            description: 'Config JSON file',
+            accept: { 'application/json': ['.json'] }
+        }],
+        multiple: false,
+    });
+
+    let text = await file.text();
+
+    // parse the content
+    let cfg = null;
+    try {
+        cfg = JSON.parse(text);
+    } catch (e) {
+        store.msg(`Failed to parse the content of the file: ${e}`, 'error');
+        return;
+    }
+
+    store.updateSettingsByJSON(cfg);
+
+    store.msg('Imported settings from the file and updated local settings');
+
+    // save to localstorage
+    store.saveSettingsToLocalStorage();
+}
+
+function onClickExportSetting() {
+    let blob = new Blob(
+        [JSON.stringify(store.config, null, 2)],
+        { type: 'application/json' }
+    );
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    let d = dayjs().format('YYYYMMDD-HHmmss');
+    a.download = `config-${d}.json`;
+    a.click();
+}
+
+function onClickReset() {
+    // let user to confirm
+    let confirm = window.confirm('Are you sure to reset all settings to default?');
+    if (!confirm) {
+        return;
+    }
+    store.clearSettingsFromLocalStorage();
+    store.msg('Reset all settings to default');
+}
+
+function onClickResetSystemPrompt(model_id) {
+    store.config.ai_models[model_id].system_prompt = "You are a helpful assistant.";
+}
+
+function onClickResetTranslationEndpoint() {
+    store.config.translation.endpoint = "http://127.0.0.1:5000/translate";
+}
+
+
+function onClickSavePrompt() {
+    store.savePromptToFile();
+}
+
+const menu = ref();
+const items = ref([
+{
+    label: 'Options',
+    items: [
+        {
+            label: 'Import',
+            icon: 'pi pi-upload',
+            command: onClickImportSetting
+        },
+        {
+            label: 'Export',
+            icon: 'pi pi-download',
+            command: onClickExportSetting
+        }
+    ]
+},
+{
+    label: 'Others',
+    items: [
+        {
+            label: 'Reset to default',
+            icon: 'pi pi-refresh',
+            command: onClickReset
+        },
+    ]
+}
+]);
+
+const toggle = (event) => {
+    menu.value.toggle(event);
+};
+
+</script>
+
+<template>
+<Drawer v-model:visible="store.flag.show_setting_panel" 
+    header="Right Drawer" 
+    style="width: 40rem;"
+    position="right">
+<template #header>
+<div class="flex flex-row items-center font-bold gap-2">
+    <font-awesome-icon icon="fa-solid fa-gear" />
+    Settings
+</div>
+</template>
+
+<template #footer>
+<div class="flex justify-between">
+    <Button icon="pi pi-save"
+        label="Save settings"
+        @click="onClickSave"
+        size="small"
+        class="mr-2"
+        severity="secondary" />
+
+    <div>
+        <Button
+            class="mr-2"
+            size="small"
+            severity="secondary"
+            icon="pi pi-ellipsis-v" 
+            label="Options"
+            @click="toggle" aria-haspopup="true" 
+            aria-controls="overlay_menu" />
+        <Menu ref="menu" id="overlay_menu" 
+            :model="items" 
+            :popup="true" />
+    </div>
+</div>
+
+</template>
+
+<div>
+<Tabs value="general">
+<TabList>
+    <Tab value="general">
+        <font-awesome-icon icon="fa-solid fa-gear" />
+        General
+    </Tab>
+    <Tab value="chatbot">
+        <font-awesome-icon icon="fa-solid fa-robot" />
+        Chatbot
+    </Tab>
+    <Tab value="2">
+        <font-awesome-icon icon="fa-solid fa-flask" />
+        Other
+    </Tab>
+</TabList>
+<TabPanels style="height: calc(100vh - 15rem); overflow-y: auto;">
+
+<TabPanel value="chatbot">
+    <template v-for="model in store.config.ai_models">
+    <div class="mb-4">
+        <p class="m-0 section">
+            <font-awesome-icon icon="fa-solid fa-cube" />
+            {{ model.name }}
+        </p>
+
+        <div class="label">
+            Endpoint
+        </div>
+        <div class="mb-2">
+            <InputText v-model="model.endpoint" 
+                class="w-full"/>
+        </div>
+
+        <div class="label">
+            Model Name
+        </div>
+        <div class="mb-2">
+            <InputText v-model="model.model_name" 
+                class="w-full"/>
+        </div>
+
+        <div class="label w-full">
+            API Key
+        </div>
+        <div class="mb-3">
+            <InputText v-model="model.api_key" 
+                class="w-full"/>
+        </div>
+
+        <div class="label">
+            Temperature (0-2)
+        </div>
+        <div class="mb-2">
+            <InputNumber v-model.number="model.temperature" 
+                :min="0" :max="2"
+                :minFractionDigits="2"
+                class="w-full"/>
+        </div>
+
+        <div class="label">
+            System Prompt 
+            (
+            <span class="cursor-pointer"
+                @click="onClickResetSystemPrompt(model.id)">
+                reset to default
+            </span>
+            )
+        </div>
+        <div class="mb-2">
+            <InputText v-model="model.system_prompt" 
+                class="w-full"/>
+        </div>
+    </div>
+    </template>
+
+</TabPanel>
+
+
+<TabPanel value="general">
+    <p class="m-0 section">
+        Hightlight Keywords
+    </p>
+
+    <div class="my-2">
+        <Button @click="onClickAddKeywords"
+            icon="pi pi-plus"
+            size="small"
+            severity="secondary"
+            label="Add keyword">
+        </Button>
+    </div>
+    
+    <ul>
+        <li v-for="keyword, keyword_index in store.config.keywords"
+            class="keyword">
+            <div v-if="typeof(keyword) == 'object'">
+                <span class="px-1 mr-1"
+                    :style="'background:' + keyword.bgcolor">
+                    <font-awesome-icon icon="fa-solid fa-tag" />
+                </span>
+                <span>
+                    {{ keyword.token }}
+                </span>
+            </div>
+            <div v-else>
+                <span class="px-1 mr-1"
+                    :style="'background: yellow'">
+                    <font-awesome-icon icon="fa-solid fa-tag" />
+                </span>
+                <span>
+                    {{ keyword }}
+                </span>
+            </div>
+
+            <div>
+                <span @click="onClickDeleteKeyword(keyword_index)"
+                    title="Delete this keyword"
+                    class="text-red-100 cursor-pointer delete-link">
+                    <font-awesome-icon icon="fa-solid fa-trash" />
+                </span>
+            </div>
+        </li>
+    </ul>
+
+</TabPanel>
+
+
+<TabPanel value="2">
+    <div class="mb-3">
+        <p class="m-0 section">
+            <font-awesome-icon icon="fa-solid fa-save" />
+            Auto highlight keywords
+        </p>
+        
+        <div>
+            <Checkbox v-model="store.config.features.auto_highlight.enabled" 
+                inputId="auto_highlight" 
+                binary />
+            <label for="auto_highlight"> Highlight keywords in title, conclusion, and abstract. </label>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <p class="m-0 section">
+            <font-awesome-icon icon="fa-solid fa-save" />
+            Auto Save
+        </p>
+        
+        <div>
+            TBD
+        </div>
+    </div>
+
+</TabPanel>
+</TabPanels>
+</Tabs>
+
+
+</div>
+</Drawer>
+
+</template>
+
+<style scoped>
+
+.note_text {
+    font-weight: bold;
+    padding: 0 1rem;
+}
+.section {
+    font-weight: bold;
+}
+.label {
+    font-size: small;
+}
+.keyword {
+    padding: 0.2rem 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.keyword:hover {
+    background-color: var(--general-bg-color);
+    font-weight: bold;
+}
+.delete-link {
+    font-size: small;
+}
+.delete-link:hover {
+    color: red;
+}
+</style>

@@ -1,0 +1,63 @@
+{
+    "name": "ThreeItems",
+    "etags": [],
+    "rtags": [],
+    "dtags": [{
+        "name": "IsConsistent",
+        "description": "Is the missed diagnosis consistent with the documentation of the base visit",
+        "save_as_key": "is_consistent",
+        "type": "list",
+        "values": [
+            "yes",
+            "no",
+            "na"
+        ],
+        "default_value": "na",
+        "attrs": [
+        {
+            "name": "comment",
+            "vtype": "text",
+            "default_value": "NA"
+        }
+        ]
+    },
+    {
+        "name": "AreInIndexVisit",
+        "description": "Are the signs and symptoms of the missed diagnosis present in the index visit",
+        "save_as_key": "are_in_index_visit",
+        "type": "list",
+        "values": [
+            "yes",
+            "no",
+            "na"
+        ],
+        "default_value": "na",
+        "attrs": [
+        {
+            "name": "comment",
+            "vtype": "text",
+            "default_value": "NA"
+        }
+        ]
+    },
+    {
+        "name": "WasWorkupAppropriate",
+        "description": "Was the workup in the index visit appropriate to exclude the missed diagnosis",
+        "save_as_key": "was_workup_appropriate",
+        "type": "list",
+        "values": [
+            "yes",
+            "no",
+            "na"
+        ],
+        "default_value": "na",
+        "attrs": [
+        {
+            "name": "comment",
+            "vtype": "text",
+            "default_value": "NA"
+        }
+        ]
+    }
+    ]
+}
