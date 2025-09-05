@@ -112,10 +112,6 @@ async function onClickClearDataset() {
   store.working_item = null;
 }
 
-function onClickSetting() {
-  store.flag.show_setting_panel = !store.flag.show_setting_panel;
-}
-
 function onClickLoadSample(sample_name) {
   console.log('* loading sample dataset ' + sample_name);
   store.loadSampleDataset(sample_name);
@@ -123,7 +119,7 @@ function onClickLoadSample(sample_name) {
 
 function onClickHelp() {
   // open a new tab to wiki page
-  window.open('https://github.com/BIDS-Xu-Lab/language-review/wiki', '_blank');
+  window.open('https://github.com/BIDS-Xu-Lab/quick-note-marker/wiki', '_blank');
 }
 
 ////////////////////////////////////////////////////////////

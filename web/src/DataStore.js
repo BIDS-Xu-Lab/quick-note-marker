@@ -67,10 +67,6 @@ state: () => ({
     {
         "note_id": 36361634,
         "note_text": "The Role of Telomerase in Breast Cancer's Response to Therapy.",
-
-        "language_detect": "New theory",
-        "decision_datetime": "2021-09-01T00:00:00Z",
-
     }
      */
     items: [],
@@ -154,12 +150,34 @@ actions: {
         this.router.push("/" + page);
     },
 
-    setWorkingItemDecision(result) {
-        this.working_item.language_detect = result;
-        this.working_item.decision_datetime = toolbox.now();
 
+    ///////////////////////////////////////////////////////
+    // Working Item
+    ///////////////////////////////////////////////////////
+
+    setWorkingItemAnnotationValue(key, value) {
+        if (!this.working_item) {
+            return;
+        }
+        this.working_item[key] = value;
+        this.working_item.updated_at = toolbox.now();
         this.flag.has_data_unsaved = true;
     },
+
+    doesWorkingItemHaveAnnotationValue(key, value) {
+        if (!this.working_item?.hasOwnProperty(key)) {
+            return false;
+        }
+        if (this.working_item[key] == value) {
+            return true;
+        }
+        return false;
+    },
+
+
+    ///////////////////////////////////////////////////////
+    // Working Item
+    ///////////////////////////////////////////////////////
 
     hasMetadata: function(item) {
         if (!item.hasOwnProperty('title')) {
@@ -174,24 +192,18 @@ actions: {
         return true;
     },
 
-    countItemsLanguageDetect: function(value) {
-        if (value == null) {
-            return this.items.filter(item => item.language_detect == null || item.language_detect == '').length;
-        }
-        return this.items.filter(item => item.language_detect == value).length;
-    },
-
     formatTsvRow: function(row) {
+        // basic columns
         let attrs = [
-            // basic information
             'note_id',
             'note_text',
-
-            // decision
-            'language_detect',
-            'decision_datetime',
-
+            'updated_at',
         ];
+
+        // add the annotation values
+        for (let tag of this.schema.dtags) {
+            attrs.push(tag.save_as_key);
+        }
 
         for (let attr of attrs) {
             if (!row.hasOwnProperty(attr)) {
@@ -202,14 +214,6 @@ actions: {
         return row;
     },
 
-    increment() {
-        this.count++;
-    },
-
-
-    translate: async function(text) {
-        
-    },
 
     // highlight keywords in text
     // the given keywords are a list of strings
@@ -277,7 +281,10 @@ actions: {
         console.log('* saved to ' + this.dataset_file.name);
         this.msg('Saved to ' + this.dataset_file.name);
     },
-    
+
+    ///////////////////////////////////////////////////////
+    // functions for the settings
+    ///////////////////////////////////////////////////////
 
     updateSettingsByJSON: function(json) {
         // copy the items from json to store.config
@@ -354,6 +361,10 @@ actions: {
         window.location.reload();
     },
 
+    ///////////////////////////////////////////////////////
+    // functions for the dataset
+    ///////////////////////////////////////////////////////
+
     // async function to load the taxonomy file
     loadSampleDataset: async function(sample_name) {
         // as this will overwrite the current data
@@ -361,13 +372,7 @@ actions: {
         if (!confirm('Loading sample dataset will overwrite the current dataset, are you sure?')) {
             return;
         }
-
-        // load the prompt
-        // req = await fetch('./sample/prompt.txt');
-        // txt = await req.text();
-        // console.log('Prompt: ', txt);
-        // this.prompt_file = {name: 'sample_prompt.txt'};
-        // this.setPromptByText(txt);
+        
         // load the schema file
         this.schema_file = {name: `${sample_name}_schema.json`};
         let req = await fetch(`./sample/${sample_name}/schema.json`);
@@ -395,14 +400,12 @@ actions: {
     ///////////////////////////////////////////////////////
     // functions for the visualization files
     ///////////////////////////////////////////////////////
-    setCurrentVisFile: function(vis_file) {
-        this.current_vis_file = vis_file;
-    },
 
-    removeVisFile: function(vis_file) {
-        let index = this.vis_files.indexOf(vis_file);
-        this.vis_files.splice(index, 1);
-    },
+
+
+    ///////////////////////////////////////////////////////
+    // other functions
+    ///////////////////////////////////////////////////////
 
     msg: function(text, type='info') {
         this.toast.add({

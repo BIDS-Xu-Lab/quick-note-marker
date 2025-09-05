@@ -18,11 +18,26 @@
   --link-hover-color: #1b72c4;
   --bg-color-menu: #f5f6f7;
   --bg-color-menu-hover: #f9f9f9;
+  --bg-color-hover: #f0f8ff;
   --bg-color-selected: #d6ecfe;
   
   --bd-color: #dadbdc;
 
   font-size: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #cecece;
+    background-color: #0a0a0a;
+    --link-color: #9eb7d2;
+    --link-hover-color: #91c9fd;
+    --bg-color-menu: #323232;
+    --bg-color-menu-hover: #5c5c5c;
+    --bd-color: #444444;
+    --bg-color-hover: #2d376b;
+    --bg-color-selected: #252c50;
+  }
 }
 
 html {
@@ -206,15 +221,13 @@ a:hover {
   padding: 0.1rem 0.5rem !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #cecece;
-    background-color: #0a0a0a;
-    --link-color: #9eb7d2;
-    --link-hover-color: #91c9fd;
-    --bg-color-menu: #323232;
-    --bg-color-menu-hover: #5c5c5c;
-    --bd-color: #444444;
-    --bg-color-selected: #252c50;
-  }
+/***************************************************/
+/* Style Fix for PrimeVue */
+/***************************************************/
+.p-panel-header {
+  padding-bottom: 0.5rem !important;
+}
+
+.p-splitter {
+  border: 0 !important;
 }

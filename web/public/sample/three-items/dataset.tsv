@@ -1,6 +1,0 @@
-note_id	note_text	is_consistent	are_in_index_visit	was_workup_appropriate	decision_datetime
-12347712	This Pt speak both English and French.	yes	yes	yes	2025-2-13 22:20:38
-212319812	Le patient parle anglais et français.	no	yes	yes	2025-2-13 22:20:38
-1121553	Kan dit pasiënt Engels en only, Patient Name: NameDate of Birth: DATE \nDate of Service: 02/13\nSubjective:\nPatient presents with a 3-day history of productive cough, reporting greenish sputum, mild dyspnea, and intermittent fever peaking at 101°F. Denies chest pain, hemoptysis, or recent travel. Past medical history significant for hypertension, managed with lisinopril. \nObjective:\n- Vital Signs: BP 130/85 mmHg, HR 88 bpm, RR 18 breaths/min, Temp 100.8°F, SpO₂ 95% on room air.\n- General: Alert and oriented; no acute distress.\n- Respiratory: Coarse crackles noted in the right lower lobe; no wheezes.\n- Cardiovascular: Regular rate and rhythm; no murmurs..	no	no	yes	2025-2-13 22:20:38
-991239123	Here is a very long sample note that is in English. It is very long and has a lot of text. It is a very long note. However, no other language mentioned in this note\nOK	yes	yes	yes	2025-2-13 22:20:38
-123123123	"No day "	no	na	yes	2025-2-13 22:20:38

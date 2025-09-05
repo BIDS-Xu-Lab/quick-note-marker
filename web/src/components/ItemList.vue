@@ -10,23 +10,14 @@ const filters = ref({
 
 const store = useDataStore();
 
-
-function isDecided(item) {
-    if (item.language_detect == '' || item.language_detect == null || item.language_detect == undefined) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 async function onClickItem(item) {
     console.log('* click item:', item);
 }
 
 function summarizeNote(note_text) {
     let _note_text = note_text;
-    if (_note_text.length > 50) {
-        _note_text = _note_text.substring(0, 50) + '...';
+    if (_note_text.length > 30) {
+        _note_text = _note_text.substring(0, 30) + '...';
     }
     return _note_text;
 }
@@ -34,7 +25,7 @@ function summarizeNote(note_text) {
 
 
 <template>
-<Panel class="w-1/3 h-full mr-2">
+<Panel class="h-full mr-2">
 <template #header>
     <div class="w-full flex justify-between">
         <div class="flex items-center gap-2">
@@ -75,7 +66,7 @@ function summarizeNote(note_text) {
         selectionMode="single" 
         scrollable
         :scrollHeight="'calc(100svh - 22.5rem)'"
-        :globalFilterFields="['note_id', 'language_detect']"
+        :globalFilterFields="['note_id']"
         dataKey="note_id"
         @row-select="onClickItem"
         paginator>
