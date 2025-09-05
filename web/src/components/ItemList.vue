@@ -27,6 +27,20 @@ function clearFilters() {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     };
 }
+
+function doesItemHaveKey(item, key) {
+    if (!item) {
+        return false;
+    }
+    if (!item.hasOwnProperty(key)) {
+        return false;
+    }
+    if (item[key] == null) {
+        return false;
+    }
+    return true;
+}
+
 </script>
 
 
@@ -98,7 +112,20 @@ function clearFilters() {
         </Column>
         <Column header="Result">
             <template #body="slotProps">
-                
+                <div class="flex flex-row gap-1">
+                    <template v-if="store.schema?.dtags?.length > 0">
+                        <div v-for="tag in store.first_three_schema_dtags"
+                            v-tooltip.right="tag.name + '\n' + tag.description"
+                            class="item-value-cell">
+                            <template v-if="doesItemHaveKey(slotProps.data, tag.save_as_key)">
+                                {{ slotProps.data[tag.save_as_key] }}
+                            </template>
+                            <template v-else>
+                                ?
+                            </template>
+                        </div>
+                    </template>
+                </div>
             </template>
         </Column>
     </DataTable>
@@ -110,4 +137,13 @@ function clearFilters() {
 
 
 <style scoped>
+.item-value-cell {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    border: 1px solid var(--bd-color);
+    border-radius: 0.5rem;
+}
+.item-value-cell:hover {
+    border-color: var(--link-hover-color);
+}
 </style>

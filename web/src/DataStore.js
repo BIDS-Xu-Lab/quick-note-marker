@@ -137,6 +137,13 @@ getters: {
         }
         return true;
     },
+
+    first_three_schema_dtags(state) {
+        if (!state.schema) {
+            return [];
+        }
+        return state.schema.dtags.slice(0, 3);
+    },
 },  
 actions: {
     gotoPage(page) {

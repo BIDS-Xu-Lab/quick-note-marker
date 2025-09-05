@@ -231,3 +231,7 @@ a:hover {
 .p-splitter {
   border: 0 !important;
 }
+
+.p-tooltip {
+  max-width: 15rem !important;
+}
