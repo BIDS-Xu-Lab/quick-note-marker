@@ -116,7 +116,8 @@ function doesItemHaveKey(item, key) {
                     <template v-if="store.schema?.dtags?.length > 0">
                         <div v-for="tag in store.first_three_schema_dtags"
                             v-tooltip.right="tag.name + '\n' + tag.description"
-                            class="item-value-cell">
+                            class="item-value-cell"
+                            :class="'item-value-cell-' + slotProps.data[tag.save_as_key]">
                             <template v-if="doesItemHaveKey(slotProps.data, tag.save_as_key)">
                                 {{ slotProps.data[tag.save_as_key] }}
                             </template>
@@ -145,5 +146,11 @@ function doesItemHaveKey(item, key) {
 }
 .item-value-cell:hover {
     border-color: var(--link-hover-color);
+}
+.item-value-cell-yes {
+    background-color: var(--bg-color-value-yes);
+}
+.item-value-cell-no {
+    background-color: var(--bg-color-value-no);
 }
 </style>

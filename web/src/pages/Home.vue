@@ -38,4 +38,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+.main {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    /* 2.5 navi + 7 menu + 2 footer */
+    height: calc(100dvh - 11.5rem);
+    padding: 0.5rem;
+
+    top: 9.5rem;
+}
 </style>
