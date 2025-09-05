@@ -9,6 +9,11 @@ const status = ref({
 });
 
 function onClickValueOption(key, value) {
+    // if no working item, return
+    if (!store.working_item) {
+        store.msg('No item selected', 'error');
+        return;
+    }
     store.setWorkingItemAnnotationValue(key, value);
 }
 </script>

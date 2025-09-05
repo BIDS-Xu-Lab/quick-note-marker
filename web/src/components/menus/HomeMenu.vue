@@ -19,14 +19,11 @@ async function onSchemaFileChange(e) {
     multiple: false,
   });
 
-  // bind the file handle
-  store.schema_file = fh;
-
-  // parse the content
+  // read the content of the file
   let content = await file.text();
   let schema = JSON.parse(content);
-  store.schema = schema;
 
+  store.loadSchema(fh, schema);
   store.msg('Loaded schema file');
 }
 
@@ -40,25 +37,13 @@ async function onDatasetFileChange(e) {
     }],
     multiple: false,
   });
+
   // console.log(e.target.files[0]);
   // let fh = e.target.files[0];
   // let f = await fs_helper.fs_read_file_system_handle(e.target.files[0]);
-  store.dataset_file = fh;
+  // store.dataset_file = fh;
 
-  Papa.parse(
-      file,
-      {
-        delimiter: '\t',
-        skipEmptyLines: true,
-        header: true,
-        worker: true,
-        step: (row) => {
-            // console.log("Row data:", row.data);
-            let formatted_row = store.formatTsvRow(row.data);
-            store.items.push(formatted_row);
-        },
-      }
-  );
+    store.loadDataset(fh, file);
 
 }
 
@@ -112,9 +97,21 @@ async function onClickClearDataset() {
   store.working_item = null;
 }
 
+async function onClickClearSchema() {
+  // if schema file is not empty, ask for confirmation
+  if (store.schema_file) {
+    let confirm = window.confirm('Are you sure to clear the schema file?');
+    if (!confirm) {
+      return;
+    }
+  }
+  store.schema = null;
+  store.schema_file = null;
+}
+
 function onClickLoadSample(sample_name) {
   console.log('* loading sample dataset ' + sample_name);
-  store.loadSampleDataset(sample_name);
+  store.loadSample(sample_name);
 }
 
 function onClickHelp() {
@@ -178,6 +175,28 @@ const menu_sample_items = ref([
         </div>
       </div>
 
+      <Button text
+          class="menu-button"
+          v-tooltip.bottom="'Clear all the current schema'"
+          @click="onClickClearSchema">
+          <font-awesome-icon :icon="['far', 'trash-can']" class="menu-icon" />
+          <span>
+              Clear
+          </span>
+      </Button>
+
+    </div>
+    <div class="menu-group-title">
+      Schema File
+    </div>
+  </div>
+
+
+
+  <div class="menu-group">
+
+    <div class="menu-group-box">
+
       <div class="flex flex-col mr-2 px-3">
         <div class="oper-item">
 
@@ -202,7 +221,6 @@ const menu_sample_items = ref([
         </div>
       </div>
 
-
       <Button text
           class="menu-button"
           v-tooltip.bottom="'Clear all the current dataset'"
@@ -215,7 +233,7 @@ const menu_sample_items = ref([
 
     </div>
     <div class="menu-group-title">
-      Files
+      Dataset File
     </div>
   </div>
 

@@ -11,5 +11,9 @@
                 "gpt-5"
             ]
         }
+    },
+
+    "schema": {
+        "default": "three_items"
     }
 }

@@ -35,11 +35,8 @@ app.use(ToastService);
 
 const store = useDataStore();
 window.store = store;
-store.loadSettingsFromLocalStorage();
 store.app_config = app_config;
 store.version = packageJson.version;
-
-// add 
 
 // add the router to the app
 app.use(router);
@@ -68,3 +65,6 @@ library.add(fas, far, fab)
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.mount('#app');
+
+
+store.init();

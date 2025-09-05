@@ -81,7 +81,6 @@ state: () => ({
     // the item which the user is working on
     working_item: null,
 
-
     // prompt
     prompt_file: null,
     llm_prompt_template: null,
@@ -151,6 +150,43 @@ actions: {
         this.router.push("/" + page);
     },
 
+    init() {
+        this.loadSettingsFromLocalStorage();
+
+        // load a default schema
+        this.loadSampleSchema(this.app_config.schema.default);
+    },
+
+    ///////////////////////////////////////////////////////
+    // Schema
+    ///////////////////////////////////////////////////////
+    loadSchema(fh, schema) {
+        this.schema_file = fh;
+        this.schema = schema;
+    },
+
+    ///////////////////////////////////////////////////////
+    // Dataset
+    ///////////////////////////////////////////////////////
+    loadDataset(fh, dataset_uri) {
+        // set the dataset file
+        this.dataset_file = fh;
+
+        // clear the current items
+        this.items = [];
+        Papa.parse(
+            dataset_uri, {
+            download: true,
+            skipEmptyLines: true,
+            delimiter: '\t',
+            header: true,
+            dynamicTyping: true,
+            step: (row) => {
+                let formatted_row = this.formatTsvRow(row.data);
+                this.items.push(formatted_row);
+            }
+        });
+    },
 
     ///////////////////////////////////////////////////////
     // Working Item
@@ -367,7 +403,7 @@ actions: {
     ///////////////////////////////////////////////////////
 
     // async function to load the taxonomy file
-    loadSampleDataset: async function(sample_name) {
+    loadSample: async function(sample_name) {
         // as this will overwrite the current data
         // ask the user to confirm
         if (!confirm('Loading sample dataset will overwrite the current dataset, are you sure?')) {
@@ -375,27 +411,32 @@ actions: {
         }
         
         // load the schema file
-        this.schema_file = {name: `${sample_name}_schema.json`};
+        this.loadSampleSchema(sample_name);
+
+        // load the sample dataset
+        let fh = {name: `${sample_name}_dataset.tsv`};
+        let dataset_uri = `./sample/${sample_name}/dataset.tsv`;
+
+        this.loadDataset(fh, dataset_uri);
+    },
+
+    loadSampleSchema: async function(sample_name) {
+        // load the schema file
         let req = await fetch(`./sample/${sample_name}/schema.json`);
         let txt = await req.text();
         let schema = JSON.parse(txt);
-        this.schema = schema;
 
+        // a fake file handle
+        let schema_file = {name: `${sample_name}_schema.json`};
+        this.loadSchema(schema_file, schema);
+    },
+
+    loadSampleDataset: async function(sample_name) {
         // load the sample dataset
-        this.dataset_file = {name: `${sample_name}_dataset.tsv`};
-        this.items = [];
-        Papa.parse(
-            `./sample/${sample_name}/dataset.tsv`, {
-            download: true,
-            skipEmptyLines: true,
-            delimiter: '\t',
-            header: true,
-            dynamicTyping: true,
-            step: (row) => {
-                let formatted_row = this.formatTsvRow(row.data);
-                this.items.push(formatted_row);
-            }
-        });
+        let fh = {name: `${sample_name}_dataset.tsv`};
+        let dataset_uri = `./sample/${sample_name}/dataset.tsv`;
+
+        this.loadDataset(fh, dataset_uri);
     },
 
     ///////////////////////////////////////////////////////
