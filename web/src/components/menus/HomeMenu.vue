@@ -263,7 +263,7 @@ const menu_sample_items = ref([
 
         <Button text
             class="menu-button"
-            v-tooltip.bottom="'Save the current results into a new dataset file'"
+            v-tooltip.bottom="'Download a copy of the current results into a new dataset file'"
             @click="onClickSaveCopy">
             <font-awesome-icon :icon="['far', 'copy']" class="menu-icon" />
             <span>

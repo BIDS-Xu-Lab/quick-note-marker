@@ -21,6 +21,12 @@ function summarizeNote(note_text) {
     }
     return _note_text;
 }
+
+function clearFilters() {
+    filters.value = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+}
 </script>
 
 
@@ -41,7 +47,7 @@ function summarizeNote(note_text) {
 
             
         </div>
-        <div>
+        <div class="flex items-center gap-2">
             <IconField v-tooltip="'Filter the list by keyword'">
                 <InputIcon>
                     <i class="pi pi-search" />
@@ -50,6 +56,14 @@ function summarizeNote(note_text) {
                     class="min-w-[10rem] max-w-[20rem]"
                     placeholder="Filter by keyword" size="normal" />
             </IconField>
+
+            <Button @click="clearFilters"
+                icon="pi pi-times"
+                size="small"
+                v-tooltip.right="'Clear the filters'"
+                severity="secondary"
+                label="">
+            </Button>
         </div>
     </div>
 </template>
