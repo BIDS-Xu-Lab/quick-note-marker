@@ -355,7 +355,7 @@ actions: {
     },
 
     // async function to load the taxonomy file
-    loadSampleDataset: async function() {
+    loadSampleDataset: async function(sample_name) {
         // as this will overwrite the current data
         // ask the user to confirm
         if (!confirm('Loading sample dataset will overwrite the current dataset, are you sure?')) {
@@ -368,20 +368,26 @@ actions: {
         // console.log('Prompt: ', txt);
         // this.prompt_file = {name: 'sample_prompt.txt'};
         // this.setPromptByText(txt);
+        // load the schema file
+        this.schema_file = {name: `${sample_name}_schema.json`};
+        let req = await fetch(`./sample/${sample_name}/schema.json`);
+        let txt = await req.text();
+        let schema = JSON.parse(txt);
+        this.schema = schema;
 
         // load the sample dataset
-        this.dataset_file = {name: 'sample_dataset.tsv'};
-        store.items = [];
+        this.dataset_file = {name: `${sample_name}_dataset.tsv`};
+        this.items = [];
         Papa.parse(
-            './sample/dataset.tsv', {
+            `./sample/${sample_name}/dataset.tsv`, {
             download: true,
             skipEmptyLines: true,
             delimiter: '\t',
             header: true,
             dynamicTyping: true,
             step: (row) => {
-                let formatted_row = store.formatTsvRow(row.data);
-                store.items.push(formatted_row);
+                let formatted_row = this.formatTsvRow(row.data);
+                this.items.push(formatted_row);
             }
         });
     },

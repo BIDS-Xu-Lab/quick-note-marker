@@ -1,0 +1,25 @@
+{
+    "name": "Simple",
+    "etags": [],
+    "rtags": [],
+    "dtags": [{
+        "name": "IsBilingual",
+        "description": "Is the note bilingual? (yes, no, na)",
+        "save_as_key": "is_bilingual",
+        "type": "list",
+        "values": [
+            "yes",
+            "no",
+            "na"
+        ],
+        "default_value": "na",
+        "attrs": [
+        {
+            "name": "comment",
+            "vtype": "text",
+            "default_value": "NA"
+        }
+        ]
+    }
+    ]
+}

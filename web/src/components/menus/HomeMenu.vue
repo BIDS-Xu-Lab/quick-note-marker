@@ -19,6 +19,9 @@ async function onSchemaFileChange(e) {
     multiple: false,
   });
 
+  // bind the file handle
+  store.schema_file = fh;
+
   // parse the content
   let content = await file.text();
   let schema = JSON.parse(content);
@@ -113,14 +116,36 @@ function onClickSetting() {
   store.flag.show_setting_panel = !store.flag.show_setting_panel;
 }
 
-function onClickLoadSample() {
-  store.loadSampleDataset();
+function onClickLoadSample(sample_name) {
+  console.log('* loading sample dataset ' + sample_name);
+  store.loadSampleDataset(sample_name);
 }
 
 function onClickHelp() {
   // open a new tab to wiki page
   window.open('https://github.com/BIDS-Xu-Lab/language-review/wiki', '_blank');
 }
+
+////////////////////////////////////////////////////////////
+// functions for the sample items
+////////////////////////////////////////////////////////////
+
+const menu_sample = ref();
+const toggleSampleMenu = (event) => {
+    menu_sample.value.toggle(event);
+};
+const menu_sample_items = ref([
+{
+    label: 'Simple Dataset',
+    icon: 'pi pi-file',
+    command: () => onClickLoadSample('simple')
+},
+{
+    label: 'Three Items',
+    icon: 'pi pi-file',
+    command: () => onClickLoadSample('three_items')
+},
+]);
 
 </script>
 
@@ -144,11 +169,11 @@ function onClickHelp() {
             </a>
           </label>
           <div class="file-zone" 
-            v-tooltip.bottom="'Load the dataset file containing the data'" 
-            :class="{ 'file-zone-loaded': store.dataset_file }" 
-            @click="onDatasetFileChange">
-            <template v-if="store.dataset_file">
-              {{ store.dataset_file.name }}
+            v-tooltip.bottom="'Load the schema file containing the data'" 
+            :class="{ 'file-zone-loaded': store.schema_file }" 
+            @click="onSchemaFileChange">
+            <template v-if="store.schema_file">
+              {{ store.schema_file.name }}
             </template>
             <template v-else>
               Load the schema file
@@ -246,7 +271,7 @@ function onClickHelp() {
             @click="onClickSaveCopy">
             <font-awesome-icon :icon="['far', 'copy']" class="menu-icon" />
             <span>
-                Save a Copy
+                Download
             </span>
         </Button>
 
@@ -267,16 +292,33 @@ function onClickHelp() {
 
   <div class="menu-group">
       <div class="menu-group-box">
-
+<!-- 
           <Button text
               class="menu-button"
               v-tooltip.bottom="'Load samples for demo.'"
-              @click="onClickLoadSample()">
+              @click="toggleSampleMenu">
               <font-awesome-icon icon="fa-regular fa-folder-closed" class="menu-icon" />
               <span>
                   Sample Data
               </span>
-          </Button>
+          </Button> -->
+
+          <Button text
+                class="menu-button"
+                aria-haspopup="true" 
+                aria-controls="overlay_tmenu" 
+                v-tooltip.bottom="'Load sample data for demonstration.'"
+                @click="toggleSampleMenu">
+                <font-awesome-icon :icon="['fas', 'clipboard-user']" class="menu-icon" />
+                <span>
+                    Samples
+                </span>
+            </Button>
+            <TieredMenu ref="menu_sample" 
+                id="overlay_tmenu" 
+                :model="menu_sample_items" 
+                popup />
+
 
           <Button text
               class="menu-button"
