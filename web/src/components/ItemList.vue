@@ -37,7 +37,7 @@ function clearFilters() {
         <div class="flex items-center gap-2">
             <div class="flex-col">
                 <div class="text-lg font-bold">
-                    <font-awesome-icon :icon="['far', 'file']" />
+                    <font-awesome-icon icon="fa-solid fa-list" />
                     Items
                 </div>
                 <div class="panel-subtitle text-sm ml-1">

@@ -305,7 +305,7 @@ const menu_sample_items = ref([
                 aria-controls="overlay_tmenu" 
                 v-tooltip.bottom="'Load sample data for demonstration.'"
                 @click="toggleSampleMenu">
-                <font-awesome-icon :icon="['fas', 'clipboard-user']" class="menu-icon" />
+                <font-awesome-icon icon="fa-solid fa-table-list" class="menu-icon" />
                 <span>
                     Samples
                 </span>

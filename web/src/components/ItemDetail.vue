@@ -48,7 +48,7 @@ function countTextLength(text) {
                         {{ store.working_item?.note_id }}
                     </template>
                 </div>
-                <div class="panel-subtitle text-sm">
+                <div class="panel-subtitle text-sm ml-1">
                     <template v-if="store.working_item">
                         {{ countTextLength(store.working_item?.note_text) }} chars
                     </template>
@@ -67,23 +67,9 @@ function countTextLength(text) {
 
 <div class="flex w-full"
     style="height: calc(100svh - 18.5rem); overflow-y: auto;">
-    
-    <div v-if="store.working_item" class="w-full">
-
-        <Fieldset class="w-full p-2">
-            <template #legend>
-                <div class="flex items-center gap-2">
-                    Note Text
-                </div>
-            </template>
-            <div v-if="store.has_working_item_note_text"
-                class="w-full"
-                v-html="renderText(store.working_item?.note_text)">
-            </div>
-            <div v-else>
-                No text available.
-            </div>
-        </Fieldset>
+    <div v-if="store.has_working_item_note_text"
+        class="w-full"
+        v-html="renderText(store.working_item?.note_text)">
     </div>
 </div>
 </Panel>

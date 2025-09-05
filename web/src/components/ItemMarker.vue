@@ -21,7 +21,7 @@ function onClickValueOption(key, value) {
         <div class="flex items-center gap-2">
             <div class="flex-col items-center">
                 <div class="text-lg font-bold">
-                    <font-awesome-icon :icon="['far', 'file']" />
+                    <font-awesome-icon icon="fa-regular fa-bookmark" />
                     Annotation
                 </div>
                 <div class="panel-subtitle text-sm">
