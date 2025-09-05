@@ -22,13 +22,13 @@ onMounted(() => {
 
 <div class="main">
 <Splitter class="w-full h-full border-0">
-    <SplitterPanel :size="30" :minSize="10">
+    <SplitterPanel :size="30" :minSize="25" :maxSize="35">
         <ItemList />
     </SplitterPanel>
-    <SplitterPanel :size="45" :minSize="10">
+    <SplitterPanel :size="45" :minSize="40">
         <ItemDetail />
     </SplitterPanel>
-    <SplitterPanel :size="25" :minSize="10">
+    <SplitterPanel :size="25" :minSize="25">
         <ItemMarker />
     </SplitterPanel>
 </Splitter>
