@@ -62,7 +62,14 @@ state: () => ({
             },
         }
     },
-    // global variables for all components
+
+    // the schema for the marking
+    schema: null,
+
+    // dataset file for review
+    dataset_file: null,
+
+    // global variables for all items of the imported dataset
     /*
     {
         "note_id": 36361634,
@@ -71,22 +78,9 @@ state: () => ({
      */
     items: [],
 
-    // the schema for the marking
-    schema: null,
-
     // the item which the user is working on
     working_item: null,
 
-    // dataset file for review
-    dataset_file: null,
-
-    // files for visualization
-    vis_files: [],
-    current_vis_file: null,
-
-    // translation
-    // dictionary of paper and tranlsated texts
-    translation: {},
 
     // prompt
     prompt_file: null,

@@ -66,7 +66,7 @@ function summarizeNote(note_text) {
         selectionMode="single" 
         scrollable
         :scrollHeight="'calc(100svh - 22.5rem)'"
-        :globalFilterFields="['note_id']"
+        :globalFilterFields="['note_id', 'note_text']"
         dataKey="note_id"
         @row-select="onClickItem"
         paginator>
