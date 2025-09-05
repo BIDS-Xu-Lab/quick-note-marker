@@ -238,7 +238,8 @@ const menu_sample_items = ref([
   </div>
 
 
-  <div class="menu-group">
+  <div v-if="store.dataset_file"
+    class="menu-group">
       <div class="menu-group-box">
         <div v-tooltip.bottom="'Current status of the dataset file'"
           class="flex flex-col justify-center mr-2">
@@ -288,12 +289,6 @@ const menu_sample_items = ref([
                 Download
             </span>
         </Button>
-
-          
-
-    <div class="save-status">
-      
-    </div>
 
 
       </div>

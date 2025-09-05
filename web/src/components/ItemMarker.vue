@@ -16,6 +16,33 @@ function onClickValueOption(key, value) {
     }
     store.setWorkingItemAnnotationValue(key, value);
 }
+
+function onClickClearAnnotation(key) {
+    // if no working item, return
+    if (!store.working_item) {
+        store.msg('No item selected', 'error');
+        return;
+    }
+    store.setWorkingItemAnnotationValue(key, null);
+}
+
+function onClickClearAllAnnotations() {
+    // if no working item, return
+    if (!store.working_item) {
+        store.msg('No item selected', 'error');
+        return;
+    }
+
+    // ask user to confirm
+    if (!confirm('Are you sure to clear all the annotations?')) {
+        return;
+    }
+    
+    for (let tag of store.schema.dtags) {
+        console.log('* clearing annotation for ', tag.save_as_key);
+        store.setWorkingItemAnnotationValue(tag.save_as_key, null);
+    }
+}
 </script>
 
 <template>
@@ -41,7 +68,13 @@ function onClickValueOption(key, value) {
             </div>
 
         </div>
+
         <div>
+            <Button text
+                icon="pi pi-trash"
+                v-tooltip.bottom="'Clear all the annotations'"
+                @click="onClickClearAllAnnotations">
+            </Button>
         </div>
     </div>
 </template>
@@ -54,7 +87,7 @@ function onClickValueOption(key, value) {
     <template v-if="store.schema?.dtags?.length > 0"
         v-for="tag in store.schema.dtags">
 
-        <Fieldset class="w-full p-2">
+        <Fieldset class="w-full p-2 relative">
             <template #legend>
                 <div class="font-bold">
                     {{ tag.name }}
@@ -78,6 +111,15 @@ function onClickValueOption(key, value) {
                         {{ value }}
                     </span>
                 </div>
+            </div>
+
+            <div class="w-full flex justify-end"
+                style="margin: -1em 0 0 0; height: 1.5rem;">
+                <Button text size="small"
+                    icon="pi pi-trash"
+                    v-tooltip.bottom="'Clear the annotation for ' + tag.name"
+                    @click="onClickClearAnnotation(tag.save_as_key)">
+                </Button>
             </div>
 
         </Fieldset>
