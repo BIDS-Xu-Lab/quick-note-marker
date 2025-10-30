@@ -1,0 +1,51 @@
+{
+    "name": "ThreeItems",
+    "etags": [],
+    "rtags": [],
+    "dtags": [{
+        "name": "IsConsistent",
+        "description": "Is the missed diagnosis consistent with the documentation of the base visit?",
+        "save_as_key": "is_consistent",
+        "type": "list",
+        "values": [
+            "yes",
+            "no"
+        ],
+        "default_value": null,
+        "attrs": [
+        {
+            "name": "Comment",
+            "description": "If not consistent, please provide the reason.",
+            "save_as_key": "is_consistent_comment",
+            "vtype": "text",
+            "default_value": "NA"
+        }
+        ]
+    },
+    {
+        "name": "Clinical Stage",
+        "description": "What is the clinical stage of the cancer?",
+        "save_as_key": "clinical_stage",
+        "type": "list",
+        "values": [
+            "I",
+            "II",
+            "IIA",
+            "IIB",
+            "III",
+            "IV",
+            "NA"
+        ],
+        "default_value": null,
+        "attrs": [
+        {
+            "name": "Details",
+            "description": "Please provide the details of the clinical stage.",
+            "save_as_key": "clinical_stage_details",
+            "vtype": "text",
+            "default_value": "NA"
+        }
+        ]
+    }
+    ]
+}
