@@ -13,13 +13,7 @@
             "na"
         ],
         "default_value": "na",
-        "attrs": [
-        {
-            "name": "comment",
-            "vtype": "text",
-            "default_value": "NA"
-        }
-        ]
+        "attrs": []
     }
     ]
 }

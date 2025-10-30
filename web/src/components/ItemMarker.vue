@@ -43,6 +43,7 @@ function onClickClearAllAnnotations() {
         store.setWorkingItemAnnotationValue(tag.save_as_key, null);
     }
 }
+
 </script>
 
 <template>
@@ -113,6 +114,28 @@ function onClickClearAllAnnotations() {
                 </div>
             </div>
 
+            <div v-if="tag.attrs?.length > 0"
+                class="attr-item-list">
+                <div v-for="attr in tag.attrs"
+                    class="attr-item">
+                    <div class="attr-item-label">
+                        {{ attr.name }}
+                    </div>
+                    <div v-tooltip.bottom="attr.description"
+                        class="attr-item-description">
+                        {{ attr.description }}
+                    </div>
+                    <div v-if="attr.vtype == 'text'" 
+                        class="attr-item-value">
+                        <InputText v-if="store.working_item"
+                            v-model="store.working_item[attr.save_as_key]" />
+                        <span v-else>
+                            Not available
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <div class="w-full flex justify-end"
                 style="margin: -1em 0 0 0; height: 1.5rem;">
                 <Button text size="small"
@@ -161,5 +184,26 @@ function onClickClearAllAnnotations() {
 .value-option-item-selected {
     font-weight: bold;
     background-color: var(--bg-color-selected);
+}
+.attr-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid var(--bd-color);
+    margin-top: 0.5rem;
+}
+.attr-item {
+    display: flex;
+    flex-direction: column;
+}
+.attr-item-label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+.attr-item-description {
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
 }
 </style>

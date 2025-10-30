@@ -138,6 +138,11 @@ const menu_sample_items = ref([
     icon: 'pi pi-file',
     command: () => onClickLoadSample('three_items')
 },
+{
+    label: 'With Attributes',
+    icon: 'pi pi-file',
+    command: () => onClickLoadSample('with_attributes')
+},
 ]);
 
 </script>

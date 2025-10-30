@@ -162,7 +162,38 @@ actions: {
     ///////////////////////////////////////////////////////
     loadSchema(fh, schema) {
         this.schema_file = fh;
-        this.schema = schema;
+
+        // need to validate the schema
+        this.schema = this.validateSchema(schema);
+    },
+
+    validateSchema(schema) {
+        // need to validate the schema
+        // the schema should be a valid JSON object
+        // and the tags of dtags in schema should have the following properties:
+        // - name
+        // - description
+        // - save_as_key
+        // - type
+        for (let tag of schema.dtags) {
+
+            let attrs_to_keep = [];
+            for (let attr of tag.attrs) {
+                if (!attr.hasOwnProperty('save_as_key')) {
+                    // remove this attribute from the tag
+                    console.log('* removing missing [save_as_key] in attribute ' + attr.name + ' from tag ' + tag.name);
+                    continue;
+                } else if (!attr.hasOwnProperty('vtype')) {
+                    // remove this attribute from the tag
+                    console.log('* removing missing [vtype] in attribute ' + attr.name + ' from tag ' + tag.name);
+                    continue;
+                }
+                attrs_to_keep.push(attr);
+            }
+            tag.attrs = attrs_to_keep;  
+        }
+        
+        return schema;
     },
 
     ///////////////////////////////////////////////////////
@@ -211,6 +242,12 @@ actions: {
         return false;
     },
 
+    getWorkingItemAnnotationValue(key) {
+        if (!this.working_item?.hasOwnProperty(key)) {
+            return null;
+        }
+        return this.working_item[key];
+    },
 
     ///////////////////////////////////////////////////////
     // Working Item
@@ -240,6 +277,11 @@ actions: {
         // add the annotation values
         for (let tag of this.schema.dtags) {
             attrs.push(tag.save_as_key);
+
+            // for each attribute of the tag, also add key
+            for (let attr of tag.attrs) {
+                attrs.push(attr.save_as_key);
+            }
         }
 
         for (let attr of attrs) {

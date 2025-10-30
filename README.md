@@ -21,3 +21,9 @@ For GitHub pages or deploy to a sub folder `/dist/`. Please change the folder na
 ```bash
 export VITE_BASE_PATH=/dist/ && npx vite build
 ```
+
+# Changelog
+
+## 2025-10-29: v1.0.3
+
+- Added text comment in schema
