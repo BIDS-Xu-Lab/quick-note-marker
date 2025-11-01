@@ -162,8 +162,10 @@ const menu_sample_items = ref([
           <label class="file-label">
             <font-awesome-icon icon="fa-regular fa-file-lines" />
             Schema File
-            <a target="_blank" href="./sample/three-items/schema.json" title="Download example schema">
-              <font-awesome-icon icon="fa-solid fa-circle-info" />
+            <a target="_blank" 
+              href="./sample/with_attributes/schema.json" 
+              v-tooltip.right="'Download example schema file'">
+                <font-awesome-icon icon="fa-solid fa-download" />
             </a>
           </label>
           <div class="file-zone" 
@@ -208,8 +210,9 @@ const menu_sample_items = ref([
           <label class="file-label">
             <font-awesome-icon icon="fa-regular fa-file-lines" />
             Dataset File
-            <a target="_blank" href="./sample/dataset.tsv" title="Download example dataset">
-              <font-awesome-icon icon="fa-solid fa-circle-info" />
+            <a target="_blank" href="./sample/three_items/dataset.tsv" 
+              v-tooltip.right="'Download example dataset'">
+              <font-awesome-icon icon="fa-solid fa-download" />
             </a>
           </label>
           <div class="file-zone" 
